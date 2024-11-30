@@ -13,3 +13,8 @@ python get_btc.py
 btc_cpu
 
 btc_cuda
+
+## todo
+
+- 优化余额查询
+- 优化私钥生成，增加随机性
