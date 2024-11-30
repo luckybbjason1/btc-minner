@@ -2,7 +2,8 @@ from bitcoinlib.wallets import Wallet
 from bitcoinlib.transactions import Transaction
 from bitcoinlib.keys import Key
 import requests
-
+from utils.private_key_gen import gen_private_key_wif
+from utils.wallet_generator import generate_bitcoin_address
 def create_test_transaction(from_wif, from_address, to_address, amount_btc, address_type='legacy'):
     """
     创建测试网络比特币转账交易
@@ -83,8 +84,9 @@ def get_test_coins(address):
 
 # 测试代码
 if __name__ == "__main__":
+    private_key = gen_private_key_wif()
     # 生成新钱包
-    wallet = generate_bitcoin_address(network='test')
+    wallet = generate_bitcoin_address(private_key, network='test')
     
     print("\n=== 测试网络比特币钱包 ===")
     print("\n私钥(WIF格式):", wallet['private_key'])

@@ -6,8 +6,6 @@ import multiprocessing
 from multiprocessing import Pool
 import time
 
-
-
 def generate_addresses_multicore(num_addresses):
     """多核并行生成比特币地址"""
     # 获取CPU核心数

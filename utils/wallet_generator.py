@@ -4,7 +4,6 @@ import base58
 import requests
 import bech32
 import os
-from utils.private_key_gen import gen_private_key
 
 address_types = ['legacy', 'p2sh-segwit', 'bech32']
 
@@ -35,17 +34,16 @@ def genNativeSegWit(ripemd160_hash, network='test'):
     address = bech32.encode(hrp, 0, witprog)
     return address
 
-def generate_bitcoin_address(network='test'):
+def generate_bitcoin_address(private_key_bytes, network='test'):
     """
     生成比特币地址
     address_type: 'legacy' (P2PKH), 'p2sh-segwit' (P2SH-SegWit), 或 'bech32' (Native SegWit)
     """
     # ... 保持现有私钥和公钥生成代码不变直到 ripemd160_hash ...
     # 生成私钥 (32字节随机数)
-    private_key = gen_private_key()
     
     # 生成公钥
-    signing_key = ecdsa.SigningKey.from_string(private_key.to_bytes(32, byteorder='big'), curve=ecdsa.SECP256k1)
+    signing_key = ecdsa.SigningKey.from_string(private_key_bytes, curve=ecdsa.SECP256k1)
     verifying_key = signing_key.get_verifying_key()
     public_key_bytes = verifying_key.to_string()
     public_key_hex = verifying_key.to_string().hex()
@@ -76,25 +74,8 @@ def generate_bitcoin_address(network='test'):
         else:
             raise ValueError("不支持的地址类型")
 
-    # 生成WIF格式私钥
-    private_key_wif = create_wif(private_key.to_bytes(32, byteorder='big'))
-    
     return {
-        'private_key': private_key_wif,
+        # 'private_key': private_key_wif,
         'public_key': public_key_hex,
-        'address_map': address_map,
-        'type': address_type
+        'address_map': address_map
     }
-
-def create_wif(private_key_bytes, network='test'):
-    # 添加版本号前缀(0x80表示私钥)
-    version = b'\xef' if network == 'test' else b'\x80'  # 测试网络使用0xef
-    version_key = version + private_key_bytes
-    
-    # 计算校验和
-    double_sha256 = hashlib.sha256(hashlib.sha256(version_key).digest()).digest()
-    checksum = double_sha256[:4]
-    
-    # 组合并Base58编码
-    wif = base58.b58encode(version_key + checksum).decode()
-    return wif
