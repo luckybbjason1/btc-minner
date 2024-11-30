@@ -24,7 +24,10 @@ def get_wallet(network='test'):
     # print(f"\n私钥验证结果: {message}")
     for address_type, address in address_map.items():
         balance = get_balance(address, 'main')
-        print(f"地址 {address} 的余额为: {balance} BTC")
+        if balance > 0:
+            print(f"地址 {address} 的余额为: {balance} 聪")
+        else:
+            print(f"地址 {address} 的余额为: {balance} 聪")
 
 if __name__ == "__main__":
     print("")

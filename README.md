@@ -5,7 +5,7 @@ python版本 3.10.6
 ## usage
 
 ```shell
-python btc.py
+python get_btc.py
 ```
 
 ## not done
