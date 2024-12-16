@@ -2,14 +2,13 @@ import os
 import glob
 from bloom import BloomFilter
 
-def process_directory(data_dir, save_dir, n, fp_rate, bloom_filter):
+def process_directory(data_dir, save_dir, bloom_filter):
     """
     处理目录中的所有CSV文件
     :param data_dir: CSV文件所在目录
     :param save_dir: PKL文件保存目录
-    :param n: 每个布隆过滤器的预期元素数量
-    :param fp_rate: 期望的假阳性率
     :return: 总共处理的地址数量
+    :param bloom_filter: 期望的假阳性率
     """
     # 确保保存目录存在
     os.makedirs(save_dir, exist_ok=True)
@@ -56,7 +55,7 @@ def main():
     # 处理all目录
     data_dir = "/Users/gtja/Desktop/etherscan_data/all"
     save_dir = "/Users/gtja/Desktop/eth_pkl/all2"
-    process_directory(data_dir, save_dir, n, fp_rate, bloom_filter)
+    process_directory(data_dir, save_dir, bloom_filter)
 
 if __name__ == "__main__":
     main()

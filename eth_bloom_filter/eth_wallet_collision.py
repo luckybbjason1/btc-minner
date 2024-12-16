@@ -4,6 +4,7 @@ import time
 import json
 from datetime import datetime
 import os
+import sys
 
 class WalletCollisionChecker:
     def __init__(self, bloom_filter_path: str, output_dir: str = "collisions"):
@@ -68,9 +69,8 @@ class WalletCollisionChecker:
             "每秒检查数": round(self.check_count / elapsed_time, 2) if elapsed_time > 0 else 0
         }
 
-def main():
+def main(BLOOM_FILTER_PATH):
     # 配置参数
-    BLOOM_FILTER_PATH = "/Users/gtja/Desktop/eth_pkl/bloom_with_map_big.pkl"  # 布隆过滤器文件路径
     BATCH_SIZE = 100  # 每批生成的钱包数量
     
     # 初始化检查器
@@ -103,5 +103,10 @@ def main():
         for key, value in stats.items():
             print(f"{key}: {value}")
 
+"""
+BLOOM_FILTER_PATH = "/Users/gtja/Desktop/eth_pkl/bloom_with_map_big.pkl"  # 布隆过滤器文件路径
+
+"""
 if __name__ == "__main__":
-    main()
+    BLOOM_FILTER_PATH = sys.argv[1]
+    main(BLOOM_FILTER_PATH)
