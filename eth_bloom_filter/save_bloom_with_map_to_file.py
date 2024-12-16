@@ -49,7 +49,7 @@ python save_bloom_with_map_to_file.py 12000000 /Users/lantian/Desktop/all /Users
 """
 if __name__ == "__main__":
     fp_rate = 0.0001
-    n = sys.argv[1]
+    n = int(sys.argv[1])
     data_dir = sys.argv[2]
     save_dir = sys.argv[3]
     # 创建布隆过滤器实例
