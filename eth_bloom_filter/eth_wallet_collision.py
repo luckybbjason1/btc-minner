@@ -38,7 +38,7 @@ class WalletCollisionChecker:
         self.check_count += 1
         # 移除地址中的 '0x' 前缀（如果有）
         address = address.replace('0x', '')
-        
+        address = address.lower()
         # 检查地址是否在布隆过滤器中
         bloom_result, exact_result = self.bloom_filter.contains(address)
         
