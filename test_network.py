@@ -84,7 +84,7 @@ def get_test_coins(address):
 
 # 测试代码
 if __name__ == "__main__":
-    private_key = gen_private_key_wif()
+    private_key = gen_private_key_wif('test')  # 使用测试网络
     # 生成新钱包
     wallet = generate_bitcoin_address(private_key, network='test')
     

@@ -10,8 +10,10 @@ def get_balance(address, network='test'):
     """
     查询比特币地址余额
     支持测试网络和主网络
-    返回余额（单位：BTC）
+    返回余额（单位：聪）
     """
+    if not address:
+        raise ValueError("地址不能为空")
 
     # 尝试多个API源
     apis = {
@@ -20,46 +22,38 @@ def get_balance(address, network='test'):
                 'url': f"https://api.blockcypher.com/v1/btc/test3/addrs/{address}/balance",
                 'parser': lambda r: satoshi_to_btc(r.json().get('balance', 0))
             },
-            # {
-            #     'url': f"https://blockstream.info/testnet/api/address/{address}",
-            #     'parser': lambda r: satoshi_to_btc(
-            #         sum([tx.get('value', 0) for tx in r.json().get('chain_stats', {}).get('funded_txo_sum', [])])
-            #     )
-            # },
-            # {
-            #     'url': f"https://api.bitaps.com/btc/testnet/v1/blockchain/address/state/{address}",
-            #     'parser': lambda r: satoshi_to_btc(r.json().get('data', {}).get('balance', 0))
-            # }
+            # 备用API可以在这里添加
         ],
         'main': [
             {
                 'url': f"https://api.blockcypher.com/v1/btc/main/addrs/{address}/balance",
                 'parser': lambda r: satoshi_to_btc(r.json().get('balance', 0))
             },
-            # {
-            #     'url': f"https://blockstream.info/api/address/{address}",
-            #     'parser': lambda r: satoshi_to_btc(r.json().get('chain_stats', {}).get('funded_txo_sum', 0))
-            # },
-            # {
-            #     'url': f"https://blockchain.info/balance?active={address}",
-            #     'parser': lambda r: satoshi_to_btc(r.json().get(address, {}).get('final_balance', 0))
-            # }
+            # 备用API可以在这里添加
         ]
     }
+
+    if network not in apis:
+        raise ValueError(f"不支持的网络类型: {network}")
 
     errors = []
     for api in apis[network]:
         try:
-            response = requests.get(api['url'], timeout=10)
-            # print(response)
+            response = requests.get(api['url'], timeout=30)  # 增加超时时间
             if response.status_code == 200:
                 balance = api['parser'](response)
                 return balance
+            else:
+                errors.append(f"HTTP错误 {response.status_code}: {response.text[:100]}")
+        except requests.exceptions.RequestException as e:
+            errors.append(f"网络请求错误 ({api['url']}): {str(e)}")
         except Exception as e:
-            errors.append(f"API错误 ({api['url']}): {str(e)}")
+            errors.append(f"解析错误 ({api['url']}): {str(e)}")
             continue
 
-    raise Exception(f"所有API都失败了。错误: {'; '.join(errors)}")
+    # 如果所有API都失败，抛出详细错误信息
+    error_message = f"所有API都失败了。网络: {network}, 地址: {address}\n错误详情: {'; '.join(errors)}"
+    raise Exception(error_message)
 
 
 if __name__ == "__main__":

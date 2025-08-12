@@ -31,7 +31,7 @@ def verify_addresses(address_map, address_map_by_bit, network='test'):
 # 使用示例
 if __name__ == "__main__":
 
-    private_key = gen_private_key_wif()
+    private_key = gen_private_key_wif('test')  # 使用测试网络
     print(private_key)
     address_map_by_bit = gen_addresses(private_key['private_key_wif'])
     address_map_by_self = generate_bitcoin_address(private_key['private_key_bytes'])
